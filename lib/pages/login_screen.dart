@@ -67,7 +67,7 @@ class LoginPageState extends State<LoginPage> {
               physics: AlwaysScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: 16.0,
-                vertical: 120.0,
+                vertical: 50.0,
               ),
               child: Form(
                 key: formKey,
@@ -244,7 +244,7 @@ class LoginPageState extends State<LoginPage> {
                           ),
 
                     Text(
-                      "if you haven't account, click the Register button below",
+                      "Haven't account, click the Register button below",
                       style: TextStyle(
                         color: Colors.deepPurple,
                         fontFamily: 'OpenSans',

@@ -4,13 +4,19 @@ import 'package:kitabui/reader/listbooks.dart';
 import 'package:kitabui/reader/books.dart';
 import 'package:kitabui/screens/home_screen.dart';
 import 'package:kitabui/reader/searchkitab.dart';
+
+import 'mangeAccount.dart';
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     const drawerHeader = UserAccountsDrawerHeader(
-      accountName: Text('Akele'),
+      accountName: Text('Akele',style: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontFamily: 'OpenSans',
+      ),),
       accountEmail: Text('akele@kitab.com'),
       currentAccountPicture: CircleAvatar(
         backgroundImage: AssetImage("assets/images/ab.png"),
@@ -24,7 +30,11 @@ class WelcomeScreen extends StatelessWidget {
       children: <Widget>[
         drawerHeader,
         ListTile(
-          title: Text('Home'),
+          title: Text('Home',style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontFamily: 'OpenSans',
+          ),),
           onTap: () {
             Navigator.push(
               context,
@@ -38,13 +48,21 @@ class WelcomeScreen extends StatelessWidget {
         ),
         ListTile(
             tileColor: Colors.blueGrey,
-          title: Text('Books'),
+          title: Text('Books',style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontFamily: 'OpenSans',
+          ),),
           onTap: () =>  Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => BookListPage()),
           ),
         ),
         ListTile(
-          title: Text('Category'),
+          title: Text('Category',style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontFamily: 'OpenSans',
+          ),),
           onTap: (){
             Navigator.push(
               context,
@@ -57,11 +75,19 @@ class WelcomeScreen extends StatelessWidget {
           }
         ),
         ListTile(
-          title: Text('New Release'),
+          title: Text('New Release',style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontFamily: 'OpenSans',
+          ),),
           onTap: (){}
         ),
         ListTile(
-            title: Text('Search'),
+            title: Text('Search',style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+              fontFamily: 'OpenSans',
+            ),),
             onTap: (){
               Navigator.push(
                 context,
@@ -74,8 +100,21 @@ class WelcomeScreen extends StatelessWidget {
             }
         ),
         ListTile(
-            title: Text('Mange Account'),
-            onTap: (){}
+            title: Text('Mange Account',style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+              fontFamily: 'OpenSans',
+            ),),
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ManageAccount();
+                  },
+                ),
+              );
+            }
         ),
 
       ],

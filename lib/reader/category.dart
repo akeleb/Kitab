@@ -57,6 +57,11 @@ class CategoryState extends State<Category> {
         ListTile(
           title: const Text('Choose your book category'),
           trailing: DropdownButton(
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            dropdownColor: Colors.blueGrey,
             value: btnSelectedVal,
             hint: const Text('Choose'),
             onChanged: (String newValue) {
