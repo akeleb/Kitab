@@ -24,7 +24,6 @@ class WelcomeScreen extends StatelessWidget {
       children: <Widget>[
         drawerHeader,
         ListTile(
-          tileColor: Colors.blueGrey,
           title: Text('Home'),
           onTap: () {
             Navigator.push(
@@ -45,7 +44,6 @@ class WelcomeScreen extends StatelessWidget {
           ),
         ),
         ListTile(
-          tileColor: Colors.blueGrey,
           title: Text('Category'),
           onTap: (){
             Navigator.push(
@@ -59,12 +57,10 @@ class WelcomeScreen extends StatelessWidget {
           }
         ),
         ListTile(
-          tileColor: Colors.blueGrey,
           title: Text('New Release'),
           onTap: (){}
         ),
         ListTile(
-            tileColor: Colors.blueGrey,
             title: Text('Search'),
             onTap: (){
               Navigator.push(
@@ -77,6 +73,10 @@ class WelcomeScreen extends StatelessWidget {
               );
             }
         ),
+        ListTile(
+            title: Text('Mange Account'),
+            onTap: (){}
+        ),
 
       ],
     );
@@ -86,17 +86,14 @@ class WelcomeScreen extends StatelessWidget {
           backgroundColor: Colors. blueAccent,
           title:  Text('Kateb Ethiopian eBook Store'),
         ),
-        body:  Center(
-          child: Text(
-              'well come',
-            style: TextStyle(
-              color: Colors.red
-            ),
-
+        body:  HomeScreen(),
+        drawer: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Colors.blueGrey,
           ),
-        ),
-        drawer: Drawer(
-          child: drawerItems,
+          child: Drawer(
+            child: drawerItems,
+          ),
         )
     );
   }

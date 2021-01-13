@@ -13,6 +13,7 @@ class BookListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         title: Text('Books in our store'),
         leading: Icon(Icons.book),
@@ -42,7 +43,7 @@ class BookTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        tileColor: Colors.lightBlueAccent,
+        tileColor: Colors.blueGrey,
       trailing: book.thumbnail,
       title: Text(book.title),
       subtitle: Text(book.author),

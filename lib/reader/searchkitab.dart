@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:kitabui/screens/download.dart';
 import 'package:kitabui/widgets/book_ratingss.dart';
 
 class KitabBooks extends StatefulWidget {
@@ -21,8 +22,10 @@ class KitabBooksState extends State<KitabBooks> {
   void initState() {
     super.initState();
     this.queryController = TextEditingController();
+
   }
 
+  dispose();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +77,7 @@ class KitabBooksState extends State<KitabBooks> {
 
   ListTile bookToListTile(KitBook book) {
     return ListTile(
-      tileColor: Colors.lightBlueAccent,
+      tileColor: Colors.blueGrey,
       title: Text(book.title),
       subtitle: Text(book.authors),
       trailing: Hero(tag: book.id, child: book.thumbnail),
@@ -193,8 +196,11 @@ class MyBookDetailsPage extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.red
                   ),),
+                onPressed: () =>  Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => Kdownload()),
               ),
 
+            ),
             ),
 
           ],

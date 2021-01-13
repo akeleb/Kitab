@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:kitabui/pages/login_screen.dart';
+
 class Register extends StatefulWidget {
   const Register({Key key}) : super(key: key);
 
@@ -15,12 +17,15 @@ class _RegisterFormState extends State<Register> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
 
-  Future<http.Response> futureResponse;
+  http.Response futureResponse;
+  String responsBody= '<empty>';
+  String error='<empty>';
+  bool panding= false;
 
   bool showPassword = true;
-  String _name;
-  String _phoneNumber;
-  String _email;
+  String name;
+  String phoneNumber;
+  String email;
   String password;
 
   String validateName(String value) {
@@ -88,8 +93,8 @@ class _RegisterFormState extends State<Register> {
                   ),
                 ),
                 onSaved: (String value) {
-                  this._name = value;
-                  print('name=$_name');
+                  this.name = value;
+                  print('name=$name');
                 },
                 validator: validateName,
               ),
@@ -119,10 +124,10 @@ class _RegisterFormState extends State<Register> {
                 ),
                 keyboardType: TextInputType.phone,
                 onSaved: (String value) {
-                  this._phoneNumber = value;
-                  print('phoneNumber=$_phoneNumber');
+                  this.phoneNumber = value;
+                  print('phoneNumber=$phoneNumber');
                 },
-                // TextInputFormatters are applied in sequence.
+
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
                 ],
@@ -153,8 +158,8 @@ class _RegisterFormState extends State<Register> {
                 ),
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (String value) {
-                  this._email = value;
-                  print('email=$_email');
+                  this.email = value;
+                  print('email=$email');
                 },
                 validator: validateEmail,
               ),
@@ -215,13 +220,19 @@ class _RegisterFormState extends State<Register> {
                 child: Form(
                   child: RaisedButton(
                     elevation: 5.0,
-                    onPressed: () {
+                    onPressed: () async{
                       if (formKey.currentState.validate()) {
-                        futureResponse = RegUser(
+                        futureResponse = await RegUser(
                             userNameController.text,
                             phoneNumberController.text,
                             emailController.text,
                             passwordController.text);
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(
+                          builder: (context) {
+                            return LoginPage();
+                          },
+                        ));
                       }
                     },
                     //        => print('Login Button Pressed'),
@@ -241,10 +252,15 @@ class _RegisterFormState extends State<Register> {
                       ),
                     ),
                   ),
+
                 ),
               ),
+              Text(responsBody),
+              Divider(),
+              Text(error),
             ],
           ),
+
         ),
       ),
     );
@@ -252,37 +268,36 @@ class _RegisterFormState extends State<Register> {
 
   Future<http.Response> RegUser(
       String name, String phoneNumber, String email, String password) async {
+    var rl = Uri.parse('http://192.198.43.65:90/api/register');
+
+    http.get(rl);
+
     final http.Response response = await http.post(
-      'http://192.198.137.107/api/user/register',
+      rl,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode(<String, dynamic>{
         "uname": name,
         "pho": phoneNumber,
         "email": email,
         "passwd": password,
       }),
     );
-
-    if (response.statusCode == 201) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to register.');
-    }
+    print("I got " + response.body);
+  return response;
   }
 }
 
-class RegUser {
+class User {
   final String name;
   final String phoneNumber;
   final String email;
   final String password;
+  User({this.name, this.phoneNumber, this.email, this.password});
 
-  RegUser({this.name, this.phoneNumber, this.email, this.password});
-
-  factory RegUser.fromJson(Map<String, dynamic> json) {
-    return RegUser(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
         name: json['name'],
         phoneNumber: json['phonNumber'],
         email: json["email"],
