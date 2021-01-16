@@ -17,7 +17,7 @@ class _RegisterFormState extends State<Register> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
 
-  http.Response futureResponse;
+  http.StreamedResponse futureResponse;
   String responsBody= '<empty>';
   String error='<empty>';
   bool panding= false;
@@ -27,7 +27,7 @@ class _RegisterFormState extends State<Register> {
   String phoneNumber;
   String email;
   String password;
-
+  User user;
   String validateName(String value) {
     if (value.isEmpty) return 'Name is required.';
     final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
@@ -58,6 +58,7 @@ class _RegisterFormState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.blueGrey,
       body: Stack(
         children: <Widget>[
@@ -69,9 +70,9 @@ class _RegisterFormState extends State<Register> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.green,
-                  Colors.yellow,
-                  Colors.red,
+                  Color(0xff21254A),
+                  Color(0xff21254A),
+                  Color(0xff21254A),
                   //Colors.red,
                 ],
                 stops: [0.2, 0.6, 0.9],
@@ -99,16 +100,15 @@ class _RegisterFormState extends State<Register> {
                   ),
                   textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(
-                    fillColor: Colors.teal,
                     border: UnderlineInputBorder(),
                     filled: true,
                     icon: Icon(Icons.person, color: Colors.white),
-                    hintText: 'Enter your name',
+                    hintText: 'Enter your user name',
                     hintStyle: TextStyle(
                       color: Colors.white70,
                       fontFamily: 'OpenSans',
                     ),
-                    labelText: 'Name *',
+                    labelText: 'User Name *',
                     labelStyle: TextStyle(
                       color: Colors.white,
                       fontFamily: 'OpenSans',
@@ -124,21 +124,27 @@ class _RegisterFormState extends State<Register> {
                 const SizedBox(height: 24.0),
                 // "Phone number" form.
                 TextFormField(
+                  controller: phoneNumberController,
+                  maxLength: 10,
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'OpenSans',
                   ),
                   decoration: const InputDecoration(
-                    fillColor: Colors.teal,
                     border: UnderlineInputBorder(),
                     filled: true,
                     icon: Icon(Icons.phone, color: Colors.white),
-                    hintText: 'Where can we reach you?',
+                    hintText: 'How can we reach you?',
                     hintStyle: TextStyle(
                       color: Colors.white70,
                       fontFamily: 'OpenSans',
                     ),
                     labelText: 'Phone Number *',
+                    helperText: "Start with 09",
+                    helperStyle: TextStyle(
+                      color: Colors.white70,
+                      fontFamily: 'OpenSans',
+                    ),
                     labelStyle: TextStyle(
                       color: Colors.white,
                       fontFamily: 'OpenSans',
@@ -153,6 +159,15 @@ class _RegisterFormState extends State<Register> {
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly
                   ],
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Phone number is Required.';
+                    }
+                    if (value.length < 10) {
+                      return 'invalid phone number';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 24.0),
                 // "Email" form.
@@ -163,7 +178,6 @@ class _RegisterFormState extends State<Register> {
                     fontFamily: 'OpenSans',
                   ),
                   decoration: const InputDecoration(
-                    fillColor: Colors.teal,
                     border: UnderlineInputBorder(),
                     filled: true,
                     icon: Icon(Icons.email, color: Colors.white),
@@ -172,7 +186,7 @@ class _RegisterFormState extends State<Register> {
                       color: Colors.white70,
                       fontFamily: 'OpenSans',
                     ),
-                    labelText: 'E-mail',
+                    labelText: 'E-mail *',
                     labelStyle: TextStyle(
                       color: Colors.white,
                       fontFamily: 'OpenSans',
@@ -191,8 +205,11 @@ class _RegisterFormState extends State<Register> {
                 TextFormField(
                   controller: passwordController,
                   obscureText: showPassword,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans',
+                  ),
                   decoration: InputDecoration(
-                    fillColor: Colors.teal,
                     border: const UnderlineInputBorder(),
                     filled: true,
                     hintText: ("Enter your password"),
@@ -200,12 +217,16 @@ class _RegisterFormState extends State<Register> {
                       color: Colors.white70,
                       fontFamily: 'OpenSans',
                     ),
-                    labelText: ("Password"),
+                    labelText: ("Password *"),
                     labelStyle: TextStyle(
                       color: Colors.white,
                       fontFamily: 'OpenSans',
                     ),
                     helperText: "Not less than 4 characters",
+                    helperStyle: TextStyle(
+                      color: Colors.white70,
+                      fontFamily: 'OpenSans',
+                    ),
                     icon: Icon(
                       Icons.lock,
                       color: Colors.white,
@@ -249,12 +270,29 @@ class _RegisterFormState extends State<Register> {
                               phoneNumberController.text,
                               emailController.text,
                               passwordController.text);
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(
-                            builder: (context) {
-                              return LoginPage();
-                            },
-                          ));
+                          switch (futureResponse.statusCode) {
+                            case 200:
+                              user = new User();
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                builder: (context) {
+                                  return LoginPage();
+                                },
+                              ));
+                              break;
+                            case 400:
+                              var body_str = await futureResponse.stream.bytesToString();
+                              dynamic body_json = jsonDecode(body_str);
+                              showSnackBar(
+                                  "message: " + body_json["message"] + "\n"
+                                  "attribute: " + body_json["attribute"] + "\n"
+                                  "error: " + body_json["error"]
+                              );
+                              break;
+                            default:
+                              showSnackBar(
+                                  "Something went wrong, try again");
+                          }
                         }
                       },
                       //        => print('Login Button Pressed'),
@@ -277,9 +315,7 @@ class _RegisterFormState extends State<Register> {
 
                   ),
                 ),
-                Text(responsBody),
                 Divider(),
-                Text(error),
               ],
             ),
 
@@ -292,26 +328,36 @@ class _RegisterFormState extends State<Register> {
     );
   }
 
-  Future<http.Response> RegUser(
+  Future<http.StreamedResponse> RegUser(
       String name, String phoneNumber, String email, String password) async {
-    var rl = Uri.parse('http://192.198.43.65:90/api/register');
+    var rl = Uri(
+        scheme: 'http',
+        host: '192.168.43.19',
+        path: 'api/register');
 
-    http.get(rl);
+    var req = http.MultipartRequest("POST", rl);
+    req.fields.addAll({
+      "uname": name,
+      "pno": phoneNumber,
+      "email": email,
+      "passwd": password,
+      "role": "user",
+    });
 
-    final http.Response response = await http.post(
-      rl,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "uname": name,
-        "pho": phoneNumber,
-        "email": email,
-        "passwd": password,
-      }),
-    );
-    print("I got " + response.body);
+    var response = await req.send();
+
+//    print("I got " + await response.stream.bytesToString());
   return response;
+  }
+  void showSnackBar(String message) {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      duration: Duration(seconds: 5),
+        action: SnackBarAction(
+          label: "Close",
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+        content: (Text(message))));
   }
 }
 

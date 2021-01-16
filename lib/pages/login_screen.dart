@@ -5,28 +5,6 @@ import 'package:kitabui/pages/registration_form.dart';
 import 'package:kitabui/pages/welcomescreen.dart';
 import 'package:http/http.dart' as http;
 
-final kHintTextStyle = TextStyle(
-  color: Colors.white54,
-  fontFamily: 'OpenSans',
-);
-
-final kLabelStyle = TextStyle(
-  color: Colors.white,
-  fontWeight: FontWeight.bold,
-  fontFamily: 'OpenSans',
-);
-
-final kBoxDecorationStyle = BoxDecoration(
-  color: Color(0xFF6CA8F1),
-  borderRadius: BorderRadius.circular(10.0),
-  boxShadow: [
-    BoxShadow(
-      color: Colors.black12,
-      blurRadius: 6.0,
-      offset: Offset(0, 2),
-    ),
-  ],
-);
 
 class LoginPage extends StatefulWidget {
   @override
@@ -52,9 +30,9 @@ class LoginPageState extends State<LoginPage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.green,
-                  Colors.yellow,
-                  Colors.red,
+                  Color(0xff21254A),
+                  Color(0xff21254A),
+                  Color(0xff21254A),
                   //Colors.red,
                 ],
                 stops: [0.2, 0.6, 0.9],
@@ -105,24 +83,20 @@ class LoginPageState extends State<LoginPage> {
                         fontFamily: 'OpenSans',
                       ),
                       decoration: const InputDecoration(
-                        fillColor: Colors.teal,
                         border: UnderlineInputBorder(),
-                        filled: true,
                         icon: Icon(Icons.person, color: Colors.white),
-                        hintText: 'Enter your name',
+                        hintText: 'Enter your user name',
                         hintStyle: TextStyle(
                           color: Colors.white70,
                           fontFamily: 'OpenSans',
                         ),
-                        labelText: 'Name *',
+                        labelText: 'User Name *',
                         labelStyle: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
                         ),
                       ),
-                      validator: (value) {
-                        return value.isEmpty ? 'Username is Required.' : null;
-                      },
+                      validator: validateName,
                     ),
 
                     // buildUserNameTF(),
@@ -138,20 +112,22 @@ class LoginPageState extends State<LoginPage> {
                         fontFamily: 'OpenSans',
                       ),
                       decoration: InputDecoration(
-                        fillColor: Colors.teal,
                         border: const UnderlineInputBorder(),
-                        filled: true,
                         hintText: ("Enter your password"),
                         hintStyle: TextStyle(
                           color: Colors.white70,
                           fontFamily: 'OpenSans',
                         ),
-                        labelText: ("Password"),
+                        labelText: ("Password *"),
                         labelStyle: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',
                         ),
                         helperText: "Not less than 4 characters",
+                        helperStyle: TextStyle(
+                        color: Colors.white70,
+                        fontFamily: 'OpenSans',
+                      ),
                         icon: Icon(
                           Icons.lock,
                           color: Colors.white,
@@ -178,13 +154,20 @@ class LoginPageState extends State<LoginPage> {
                     ),
 
                     //buildPasswordTF(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-//                    isRequesting
-//                        ? CircularProgressIndicator(
-//                            backgroundColor: Colors.red,
-//                          )
+                    SizedBox(height: 30.0),
+                             FlatButton(
+                                 onPressed: null,
+                                 child: Text("Forgot Password?",
+                                   style: TextStyle(
+                                     color: Colors.lightBlueAccent,
+                                     letterSpacing: 1.5,
+                                     fontSize: 20.0,
+                                     fontWeight: FontWeight.bold,
+                                     fontFamily: 'OpenSans',
+                                   ),
+                                 )
+                             ),
+
                          Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: 25.0, horizontal: 80.0),
@@ -222,8 +205,6 @@ class LoginPageState extends State<LoginPage> {
 //                                    }
                                   }
                                 },
-
-                                //        => print('Login Button Pressed'),
                                 padding: EdgeInsets.all(15.0),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40.0),
@@ -242,27 +223,23 @@ class LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
+                    SizedBox(height: 30,),
 
-                    Text(
-                      "Haven't account, click the Register button below",
-                      style: TextStyle(
-                        color: Colors.deepPurple,
-                        fontFamily: 'OpenSans',
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 25.0, horizontal: 75.0),
-                      width: double.infinity,
-                      child: Form(
-                        child: RaisedButton(
-                          elevation: 5.0,
-                          onPressed: () {
+                    Row(
+                      children: [
+                        Text(
+                          "Haven't account?",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontFamily: 'OpenSans',
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 30),
+                        FlatButton(
+                          focusColor: Colors.pink,
+                          onPressed:(){
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -272,24 +249,19 @@ class LoginPageState extends State<LoginPage> {
                               ),
                             );
                           },
-                          padding: EdgeInsets.all(15.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40.0),
-                          ),
-                          color: Colors.greenAccent,
-                          child: Text(
-                            'REGISTER',
+                          child: Text("Register",
                             style: TextStyle(
-                              color: Colors.indigo,
-                              letterSpacing: 1.5,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
+                              color: Colors.lightBlue,
                               fontFamily: 'OpenSans',
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-                      ),
+                        )
+                      ],
                     ),
+
+
                   ],
                 ),
               ),
@@ -304,21 +276,13 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void validateAndSave() {
-    final form = formKey.currentState;
-
-    if (form.validate()) {
-      form.save();
-//      performLogin();
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(
-//          builder: (context) {
-//            return WelcomeScreen();
-//          },
-//        ),
-//      );
+  String validateName(String value) {
+    if (value.isEmpty) return 'Name is required.';
+    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
+    if (!nameExp.hasMatch(value)) {
+      return 'Please enter only alphabetical characters.';
     }
+    return null;
   }
 
   Future<http.Response> LogInUser(String name, String password) async {

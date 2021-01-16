@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kitabui/pages/demologin.dart';
 import 'package:kitabui/reader/category.dart';
 import 'package:kitabui/reader/listbooks.dart';
-import 'package:kitabui/reader/books.dart';
 import 'package:kitabui/screens/home_screen.dart';
 import 'package:kitabui/reader/searchkitab.dart';
 
@@ -12,6 +12,12 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const drawerHeader = UserAccountsDrawerHeader(
+      decoration: BoxDecoration(
+        color: Colors.teal,
+        shape: BoxShape.rectangle,
+
+      ),
+
       accountName: Text('Akele',style: TextStyle(
         color: Colors.white,
         fontSize: 20,
@@ -29,9 +35,17 @@ class WelcomeScreen extends StatelessWidget {
     final drawerItems = ListView(
       children: <Widget>[
         drawerHeader,
+        Divider(
+          color: Colors.red,
+          height: 1,
+          thickness: 5,
+          indent: 20,
+          endIndent: 20,
+        ),
         ListTile(
           title: Text('Home',style: TextStyle(
             color: Colors.white,
+            fontWeight: FontWeight.bold,
             fontSize: 25,
             fontFamily: 'OpenSans',
           ),),
@@ -51,6 +65,7 @@ class WelcomeScreen extends StatelessWidget {
           title: Text('Books',style: TextStyle(
             color: Colors.white,
             fontSize: 25,
+            fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),),
           onTap: () =>  Navigator.of(context).push(
@@ -61,6 +76,7 @@ class WelcomeScreen extends StatelessWidget {
           title: Text('Category',style: TextStyle(
             color: Colors.white,
             fontSize: 25,
+            fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),),
           onTap: (){
@@ -78,14 +94,17 @@ class WelcomeScreen extends StatelessWidget {
           title: Text('New Release',style: TextStyle(
             color: Colors.white,
             fontSize: 25,
+            fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),),
-          onTap: (){}
+          onTap: (){
+          }
         ),
         ListTile(
             title: Text('Search',style: TextStyle(
               color: Colors.white,
               fontSize: 25,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),),
             onTap: (){
@@ -103,6 +122,7 @@ class WelcomeScreen extends StatelessWidget {
             title: Text('Mange Account',style: TextStyle(
               color: Colors.white,
               fontSize: 25,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),),
             onTap: (){
@@ -115,6 +135,15 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               );
             }
+        ),
+        ListTile(
+            title: Text('About Us',style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
+            ),),
+            onTap: (){}
         ),
 
       ],

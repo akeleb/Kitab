@@ -16,7 +16,7 @@ class BookListPage extends StatelessWidget {
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(
         title: Text('Books in our store'),
-        leading: Icon(Icons.book),
+        //leading: Icon(Icons.book_online),
       ),
       body: FutureBuilder(
           future: fetchPotterBooks(),
@@ -104,6 +104,7 @@ class BookDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(title: Text(book.title)),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
