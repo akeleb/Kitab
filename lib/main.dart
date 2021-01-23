@@ -1,7 +1,7 @@
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:kitabui/utilities/consttants.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/Akele/AndroidStudioProjects/kitab/lib/pages/login_screen.dart';
+import 'package:kitabui/pages/login_screen.dart';
 
 void main() => runApp(MyApp());
 

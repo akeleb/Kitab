@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kitabui/pages/registration_form.dart';
 import 'package:kitabui/pages/welcomescreen.dart';
+import 'package:kitabui/models/User.dart';
 import 'package:http/http.dart' as http;
+//import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -12,14 +15,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   bool showPassword = true;
   var isRequesting = false;
-  http.Response futureResponse;
+  http.StreamedResponse futureResponse;
   User user;
+  String name;
+  String phoneNumber;
+  String email;
+  String password;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: Stack(
         children: <Widget>[
           Container(
@@ -82,7 +91,7 @@ class LoginPageState extends State<LoginPage> {
                         color: Colors.white,
                         fontFamily: 'OpenSans',
                       ),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: UnderlineInputBorder(),
                         icon: Icon(Icons.person, color: Colors.white),
                         hintText: 'Enter your user name',
@@ -96,6 +105,10 @@ class LoginPageState extends State<LoginPage> {
                           fontFamily: 'OpenSans',
                         ),
                       ),
+                      onSaved: (String value) {
+                        this.name = value;
+                        print('name=$name');
+                      },
                       validator: validateName,
                     ),
 
@@ -112,7 +125,7 @@ class LoginPageState extends State<LoginPage> {
                         fontFamily: 'OpenSans',
                       ),
                       decoration: InputDecoration(
-                        border: const UnderlineInputBorder(),
+                        border: UnderlineInputBorder(),
                         hintText: ("Enter your password"),
                         hintStyle: TextStyle(
                           color: Colors.white70,
@@ -142,13 +155,18 @@ class LoginPageState extends State<LoginPage> {
                           color: showPassword ? Colors.blueGrey : Colors.red,
                         ),
                       ),
+                      onSaved: (String value) {
+                        this.name = value;
+                        print('name=$name');
+                      },
                       validator: (String value) {
                         if (value.isEmpty) {
                           return 'Password is Required.';
                         }
-                        if (value.length < 4) {
-                          return 'Password too short.';
+                        else if (!RegExp('^[a-zA-Z0-9.]{4,32}\$').hasMatch(value)) {
+                          return "Minimum of 4 charachters";
                         }
+
                         return null;
                       },
                     ),
@@ -181,28 +199,77 @@ class LoginPageState extends State<LoginPage> {
                                     setState(() {
                                       isRequesting = true;
                                     });
-//                                    futureResponse = await LogInUser(
-//                                        userNameController.text,
-//                                        passwordController.text);
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) {
-                                        return WelcomeScreen();
-                                      },
-                                    ));
+                                    try {
+                                      futureResponse = await LogInuser(
+                                          userNameController.text,
+                                          passwordController.text);
+                                    } catch (e) {
+                                      setState(() {
+                                        isRequesting = false;
+                                      });
+                                      showSnackBar(
+                                        ('  We can\'t reach the server\n'
+                                            '  please check your internet connection! '),
+                                      );
+                                    }
+//                                    //Navigator.pop(context);
+//                                    Navigator.of(context)
+//                                        .push(MaterialPageRoute(
+//                                      builder: (context) {
+//                                        return WelcomeScreen(user);
+//                                      },
+//                                    ));
 
-//                                    switch (futureResponse.statusCode) {
-//                                      case 201:
-//                                        user = new User();
-//                                        User.fromJson(
-//                                            jsonDecode(futureResponse.body));
-//                                        Navigator.of(context)
-//                                            .push(MaterialPageRoute(
-//                                          builder: (context) {
-//                                            return WelcomeScreen();
-//                                          },
-//                                        ));
-//                                    }
+                                    switch (futureResponse.statusCode) {
+                                      case 200:
+                                        setState(() {
+                                          isRequesting = false;
+                                        });
+                                        user = new User();
+                                        showSnackBar("Well Come "+ userNameController.text);
+                                        Timer(Duration(seconds: 2), () async {
+                                          //Navigator.pop(context);
+                                          var body_str = await futureResponse.stream
+                                              .bytesToString();
+                                          dynamic body_json = jsonDecode(body_str);
+
+                                          UserInfo st(){
+                                            return UserInfo(userName: body_json['uname'],
+                                                email: body_json['email']);
+                                          }
+
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) {
+                                              return WelcomeScreen(userInfo:st());
+                                            },
+                                          ));
+                                          setState(() {
+                                            userNameController.text="";
+                                            passwordController.text="";
+                                          });
+                                        });
+
+                                        break;
+                                      case 400:
+                                        setState(() {
+                                          isRequesting = false;
+                                        });
+                                        var body_str = await futureResponse.stream
+                                            .bytesToString();
+                                        dynamic body_json = jsonDecode(body_str);
+                                        showSnackBar(body_json["message"] +
+                                            "\n"
+                                                "make sure you have enterd the correct"
+                                                " user name and password");
+                                        break;
+                                      default:
+                                        showSnackBar(
+                                            "Something went wrong, try again");
+                                        setState(() {
+                                          isRequesting = false;
+                                        });
+                                    }
                                   }
                                 },
                                 padding: EdgeInsets.all(15.0),
@@ -223,6 +290,9 @@ class LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
+                    isRequesting
+                        ? Center(child: CircularProgressIndicator())
+                        : SizedBox(height: 60),
                     SizedBox(height: 30,),
 
                     Row(
@@ -278,41 +348,42 @@ class LoginPageState extends State<LoginPage> {
 
   String validateName(String value) {
     if (value.isEmpty) return 'Name is required.';
-    final RegExp nameExp = RegExp(r'^[A-Za-z ]+$');
+    final RegExp nameExp = RegExp(r'^[a-z ]+$');
     if (!nameExp.hasMatch(value)) {
       return 'Please enter only alphabetical characters.';
     }
     return null;
   }
 
-  Future<http.Response> LogInUser(String name, String password) async {
-    final http.Response response = await http.post(
-      'http://192.198.137.107/api/user/Login',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "uname": name,
-        "passwd": password,
-      }),
-    );
-    return response;
+  Future<http.StreamedResponse> LogInuser(
+      String name, String password) async {
+    var rl = Uri(scheme: 'http', host: '10.2.64.163', path: 'api/auth');
 
-//    if (response.statusCode == 201) {
-//      return jsonDecode(response.body);
-//    } else {
-//      throw Exception('Failed to register.');
-//    }
+    var req = http.MultipartRequest("POST", rl);
+    req.fields.addAll({
+      "uname": name,
+      "passwd": password,
+      "role": "user",
+    });
+
+    var response = await req.send();
+
+//    print("I got " + await response.stream.bytesToString());
+    return response;
+  }
+  void showSnackBar(String message) {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+        action: SnackBarAction(
+          label: "Close",
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+        content: (Text(message))));
   }
 }
-
-class User {
-  final String name;
-  final String password;
-
-  User({this.name, this.password});
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(name: json['name'], password: json['password']);
-  }
+class UserInfo
+{
+  final String userName;
+  final String email;
+  UserInfo({this.userName,this.email});
 }

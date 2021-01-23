@@ -49,9 +49,9 @@ class HomeScreen extends StatelessWidget {
                       children: <Widget>[
                         ReadingListCard(
                           thumbnailUrl: "assets/images/book-1.jpg",
-                      title: "ብርቅርቅታ",
-                      authors: "ዳንኤል ስቲል",
-                      rating: 4.9,
+                          title: "ብርቅርቅታ",
+                          authors: "ዳንኤል ስቲል",
+                          rating: 4.9,
                           pressDetails: () {
                             Navigator.push(
                               context,
@@ -137,7 +137,8 @@ class HomeScreen extends StatelessWidget {
                               children: <Widget>[
                                 Expanded(
                                   child: Padding(
-                                    padding: EdgeInsets.only(left: 30, right: 20),
+                                    padding:
+                                        EdgeInsets.only(left: 30, right: 20),
                                     child: Row(
                                       children: <Widget>[
                                         Expanded(
@@ -246,10 +247,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   Text(
                     "ጓደኛን በሀሳብ እንዴት \nማሸነፍ & ተጽዕኖ መፍጠር ይቻላል",
-
-                    style: TextStyle(
-                      color: Colors.black
-                    ),
+                    style: TextStyle(color: Colors.black),
                   ),
                   Text(
                     "አቤ ጉበኛ",
@@ -260,7 +258,7 @@ class HomeScreen extends StatelessWidget {
                     child: Row(
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.only(right: 10.0), 
+                          padding: EdgeInsets.only(right: 10.0),
                           child: BookRating(score: 4.9),
                         ),
                         Expanded(

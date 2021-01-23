@@ -1,40 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:kitabui/pages/demologin.dart';
+import 'package:kitabui/pages/login_screen.dart';
 import 'package:kitabui/reader/category.dart';
 import 'package:kitabui/reader/listbooks.dart';
 import 'package:kitabui/screens/home_screen.dart';
 import 'package:kitabui/reader/searchkitab.dart';
+import 'package:kitabui/models/User.dart';
 
 import 'mangeAccount.dart';
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key key}) : super(key: key);
+class WelcomeScreen extends StatefulWidget {
+  final UserInfo userInfo;
+  WelcomeScreen({this.userInfo});
+
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const drawerHeader = UserAccountsDrawerHeader(
-      decoration: BoxDecoration(
-        color: Colors.teal,
-        shape: BoxShape.rectangle,
-
-      ),
-
-      accountName: Text('Akele',style: TextStyle(
-        color: Colors.white,
-        fontSize: 20,
-        fontFamily: 'OpenSans',
-      ),),
-      accountEmail: Text('akele@kitab.com'),
-      currentAccountPicture: CircleAvatar(
-        backgroundImage: AssetImage("assets/images/ab.png"),
-        backgroundColor: Colors.white,
-
-        //child: FlutterLogo(size: 42.0),
-      ),
-
-    );
     final drawerItems = ListView(
       children: <Widget>[
-        drawerHeader,
+        UserAccountsDrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.teal,
+            shape: BoxShape.rectangle,
+
+          ),
+
+          accountName: Text(widget.userInfo.userName ,style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontFamily: 'OpenSans',
+          ),),
+          accountEmail: Text(widget.userInfo.email),
+          currentAccountPicture: CircleAvatar(
+            backgroundImage: AssetImage("assets/images/ab.png"),
+            backgroundColor: Colors.white,
+
+            //child: FlutterLogo(size: 42.0),
+          ),
+
+        ),
         Divider(
           color: Colors.red,
           height: 1,

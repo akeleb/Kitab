@@ -14,10 +14,12 @@ class KitabBooks extends StatefulWidget {
 class KitabBooksState extends State<KitabBooks> {
 
   final scafoldkey= GlobalKey<ScaffoldState>();
+  http.Response respo;
 
   TextEditingController queryController;
   List<KitBook> books = [];
   bool pending = false;
+  var isRequesting = false;
   @override
   void initState() {
     super.initState();
@@ -68,8 +70,12 @@ class KitabBooksState extends State<KitabBooks> {
                 itemBuilder: (ctx, i) => bookToListTile(books[i]),
               ),
             ),
+          isRequesting
+              ? Center(child: CircularProgressIndicator())
+              : SizedBox(height: 60),
         ],
       ),
+
 
 
     );
@@ -106,14 +112,26 @@ class KitabBooksState extends State<KitabBooks> {
   Future<void> search(String query) async {
     setState(() => this.pending = true);
     try {
+      setState(() {
+        isRequesting=true;
+      });
       this.books = await getBooksList(query);
+//      switch(respo.statusCode){
+//
+//      }
       scafoldkey.currentState.showSnackBar(
         SnackBar(content: Text('Successfully found ${books.length} books.')),
       );
+      setState(() {
+        isRequesting=false;
+      });
     } catch (e) {
       scafoldkey.currentState.showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
+      setState(() {
+        isRequesting=false;
+      });
     }
     setState(() => this.pending = false);
   }
@@ -172,7 +190,7 @@ class MyBookDetailsPage extends StatelessWidget {
         title: Text(book.title),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(4),
+        padding: EdgeInsets.all(4),
         child: Column(
           children: [
             Hero(

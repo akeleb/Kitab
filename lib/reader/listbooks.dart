@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:kitabui/screens/download.dart';
+import 'package:kitabui/widgets/book_ratingss.dart';
 
 final uri = Uri(
     scheme: 'https',
@@ -23,7 +25,7 @@ class BookListPage extends StatelessWidget {
           builder: (context, AsyncSnapshot<List<KitBook>> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return Center(child: Text('Error: unable to reach the server'));
               } else {
                 return ListView(
                     children: snapshot.data.map((b) => BookTile(b)).toList());
@@ -67,6 +69,8 @@ List<KitBook> parseBookJson(String jsonStr) {
   return jsonList.map((jsonBook) => KitBook(
     id: jsonBook['volumeInfo']['id'],
     title: jsonBook['volumeInfo']['title'],
+    description: jsonBook['volumeInfo']['description']as String ??
+        '<missing description>',
     author: (jsonBook['volumeInfo']['authors'] as List).join(', '),
     thumbnailUrl: jsonBook['volumeInfo']['imageLinks']
     ['smallThumbnail'],
@@ -78,11 +82,13 @@ class KitBook {
   final String id;
   final String title;
   final String author;
+  final String description;
   final String thumbnailUrl;
 
   KitBook({ this.id,
     this.title,
     this.author,
+    this.description,
     this.thumbnailUrl})
       : assert(title != null),
         assert(author != null);
@@ -107,7 +113,7 @@ class BookDetailsPage extends StatelessWidget {
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(title: Text(book.title)),
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.all(15.0),
         child: BookDetails(book),
       ),
     );
@@ -117,6 +123,7 @@ class BookDetailsPage extends StatelessWidget {
 class BookDetails extends StatelessWidget {
   final KitBook book;
   BookDetails(this.book);
+  //StatefulStarRating star;
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +131,30 @@ class BookDetails extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Text(book.title),
           Image.network(book.thumbnailUrl),
           SizedBox(height: 10.0),
-          Text(book.title),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: Text(book.author,
-                style: TextStyle(fontWeight: FontWeight.w700)),
+          StatefulStarRating(),
+          //Text(star.value.toString()),
+          Divider(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Text(book.description),
+            ),
+          ),
+          Container(
+            child: RaisedButton(
+              elevation: 20,
+              color: Colors.blue,
+              child:Text("Buy",
+                style: TextStyle(
+                    color: Colors.red
+                ),),
+              onPressed: () =>  Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => Kdownload()),
+              ),
+
+            ),
           ),
         ],
       ),

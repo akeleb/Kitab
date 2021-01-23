@@ -34,7 +34,7 @@ class CategoryState extends State<Category> {
     'Philosophy Books',
     'Educational Boooks',
     'Poletical Books',
-    'Abel'
+    'Diary Books'
   ];
   final List<DropdownMenuItem<String>> CategoryItems = menuItems
       .map(
