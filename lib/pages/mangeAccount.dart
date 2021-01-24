@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:kitabui/models/User.dart';
-
+import '../consts.dart' as consts;
 import 'login_screen.dart';
-
-final rl = Uri(scheme: 'http', host: '192.168.43.19', path: 'api/userInfo');
 
 class ManageAccount extends StatefulWidget {
   const ManageAccount({Key key}) : super(key: key);
@@ -82,7 +80,7 @@ class ManageAccountState extends State<ManageAccount> {
                   color: Colors.greenAccent,
                   child: Text("Deactivate Account",
                     style: TextStyle(
-                      color: Colors.indigo,
+                      color: Colors.red,
                       letterSpacing: 1.5,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
@@ -99,7 +97,6 @@ class ManageAccountState extends State<ManageAccount> {
     );
   }
 }
-
 class UserField extends StatefulWidget  {
   @override
   _UserFieldState createState() => _UserFieldState();
@@ -141,13 +138,14 @@ class _UserFieldState extends State<UserField> {
   String phoneNumber;
   String email;
   String password;
+  String userinfo="userf";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff21254A),
       body: FutureBuilder(
-          future: fetchUserInfo(),
+          future: fetchUserInfo(userinfo),
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasError) {
@@ -432,14 +430,20 @@ class _UserFieldState extends State<UserField> {
   }
 
   // ignore: missing_return
-   fetchUserInfo() async {
-    final res = await http.get(rl);
-    if (res.statusCode == 200) {
-      user = jsonDecode(res.body);
+  Future<http.StreamedResponse> fetchUserInfo(String user) async {
+    var rl = Uri(
+        scheme: 'http',
+        host: consts.location,
+        path: 'api/content/search');
 
-    } else {
-      throw Exception('Error: ${res.statusCode}');
-    }
+    var req = http.MultipartRequest("POST", rl);
+
+    req.fields.addAll({
+      "user": user,
+    });
+//    print("I got " + await response.stream.bytesToString());
+    var response = await req.send();
+    return response;
   }
 
   Future<http.StreamedResponse> RegUser(

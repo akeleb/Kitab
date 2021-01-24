@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kitabui/pages/login_screen.dart';
 import 'package:kitabui/reader/category.dart';
 import 'package:kitabui/reader/listbooks.dart';
+import 'package:kitabui/reader/reader.dart';
 import 'package:kitabui/screens/home_screen.dart';
 import 'package:kitabui/reader/searchkitab.dart';
 import 'package:kitabui/models/User.dart';
@@ -28,12 +29,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
           ),
 
-          accountName: Text(widget.userInfo.userName ,style: TextStyle(
+          accountName: Text('widget.userInfo.userName' ,style: TextStyle(
             color: Colors.white,
             fontSize: 20,
             fontFamily: 'OpenSans',
           ),),
-          accountEmail: Text(widget.userInfo.email),
+          accountEmail: Text('widget.userInfo.email'),
           currentAccountPicture: CircleAvatar(
             backgroundImage: AssetImage("assets/images/ab.png"),
             backgroundColor: Colors.white,
@@ -76,7 +77,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             fontFamily: 'OpenSans',
           ),),
           onTap: () =>  Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => BookListPage()),
+            MaterialPageRoute(builder: (_) => GetAllBooks()),
           ),
         ),
         ListTile(
@@ -98,13 +99,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           }
         ),
         ListTile(
-          title: Text('New Release',style: TextStyle(
+          title: Text('My Books',style: TextStyle(
             color: Colors.white,
             fontSize: 25,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),),
           onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return MyPDFList();
+                },
+              ),
+            );
           }
         ),
         ListTile(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kitabui/screens/download.dart';
 import 'package:kitabui/widgets/book_ratingss.dart';
+import '../consts.dart' as consts;
 
 class KitabBooks extends StatefulWidget {
   const KitabBooks({Key key}) : super(key: key);
@@ -12,21 +13,18 @@ class KitabBooks extends StatefulWidget {
 }
 
 class KitabBooksState extends State<KitabBooks> {
-
-  final scafoldkey= GlobalKey<ScaffoldState>();
+  final scafoldkey = GlobalKey<ScaffoldState>();
   http.Response respo;
 
   TextEditingController queryController;
-  List<KitBook> books = [];
+  List<KitBooks> books = [];
   bool pending = false;
   var isRequesting = false;
   @override
   void initState() {
     super.initState();
     this.queryController = TextEditingController();
-
   }
-
   dispose();
   @override
   Widget build(BuildContext context) {
@@ -51,15 +49,13 @@ class KitabBooksState extends State<KitabBooks> {
               border: OutlineInputBorder(),
             ),
           ),
-
           ButtonBar(
             children: <Widget>[
               RaisedButton(
                 color: Colors.green,
                 onPressed:
-                pending ? null : () => this.search(queryController.text),
-                child: Text(
-                    'Search'),
+                    pending ? null : () => this.search(queryController.text),
+                child: Text('Search'),
               ),
             ],
           ),
@@ -75,111 +71,107 @@ class KitabBooksState extends State<KitabBooks> {
               : SizedBox(height: 60),
         ],
       ),
-
-
-
     );
   }
 
-  ListTile bookToListTile(KitBook book) {
+  ListTile bookToListTile(KitBooks book) {
     return ListTile(
       tileColor: Colors.blueGrey,
       title: Text(book.title),
       subtitle: Text(book.authors),
-      trailing: Hero(tag: book.id, child: book.thumbnail),
+      //trailing: Hero(tag: book.id, child: book.thumbnail),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => MyBookDetailsPage(book)),
       ),
     );
   }
 
-  Future<List<KitBook>> getBooksList(String query) async {
-    final uri = Uri(
-      scheme: 'https',
-      host: 'www.googleapis.com',
-      path: 'books/v1/volumes',
-      queryParameters: {'q': query},
-    );
-    print('uri=$uri');
-    final http.Response response = await http.get(uri.toString());
-    if (response.statusCode == 200) {
-      return KitBook.parseFromJsonStr(response.body);
-    } else {
-      throw response;
-    }
+  Future<http.StreamedResponse> getBooksList(String title) async {
+    var rl = Uri(
+        scheme: 'http',
+        host: consts.location,
+        path: 'api/content/search');
+
+    var req = http.MultipartRequest("POST", rl);
+
+    req.fields.addAll({
+      "title": title,
+    });
+
+//    print("I got " + await response.stream.bytesToString());
+    var response = await req.send();
+    return response;
   }
 
-  Future<void> search(String query) async {
+  List<KitBooks> parseFromJsonStr(dynamic jsonStr) {
+//  final jsonMap = jsonDecode(jsonStr);
+    final jsonList = jsonStr as List<dynamic>;
+    print('${jsonList.length} items in json');
+    return jsonList.map((e) => KitBooks.fromJson(e)).toList();
+  }
+
+  Future<void> search(String title) async {
     setState(() => this.pending = true);
     try {
       setState(() {
-        isRequesting=true;
+        isRequesting = true;
       });
-      this.books = await getBooksList(query);
-//      switch(respo.statusCode){
-//
-//      }
+      var x = await getBooksList(title);
+      this.books = parseFromJsonStr(json.decode(await x.stream.bytesToString()));
       scafoldkey.currentState.showSnackBar(
         SnackBar(content: Text('Successfully found ${books.length} books.')),
       );
       setState(() {
-        isRequesting=false;
+        isRequesting = false;
       });
     } catch (e) {
       scafoldkey.currentState.showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
       setState(() {
-        isRequesting=false;
+        isRequesting = false;
       });
     }
     setState(() => this.pending = false);
   }
 }
+
 // Data class to convert from the json response.
-class KitBook {
+List<KitBooks> parseFromJsonStr(dynamic jsonStr) {
+//  final jsonMap = jsonDecode(jsonStr);
+  final jsonList = jsonStr as List<dynamic>;
+  print('${jsonList.length} items in json');
+  return jsonList.map((e) => KitBooks.fromJson(e)).toList();
+}
+class KitBooks {
   final String price;
-  final String id;
+  final int id;
   final String title;
   final String authors;
   final String description;
-  final String thumbnailUrl;
-  KitBook(
-      this.id,
-      this.price,
-      this.title,
-      this.authors,
-      this.description,
-      this.thumbnailUrl);
+//  final String thumbnailUrl;
 
-  Widget get thumbnail => this.thumbnailUrl != null
-      ? Image.network(this.thumbnailUrl)
-      : CircleAvatar(child: Text(this.title[0]));
-
-  KitBook.fromJson(Map<String, dynamic> jsonMap)
-      : id = jsonMap['id'] as String,
-        price=jsonMap['volumeInfo']['price'] as String,
-        title = jsonMap['volumeInfo']['title'] as String,
-        authors = (jsonMap['volumeInfo']['authors'] as List).join(', '),
-        description = jsonMap['volumeInfo']['description'] as String ??
-            '<missing description>',
-        thumbnailUrl =
-        jsonMap['volumeInfo']['imageLinks']['smallThumbnail'] as String;
-
-  static List<KitBook> parseFromJsonStr(String jsonStr) {
-    final jsonMap = jsonDecode(jsonStr);
-    final jsonList = jsonMap['items'] as List<dynamic>;
-    print('${jsonList.length} items in json');
-    return [
-      for (final jsonMap in jsonList)
-        KitBook.fromJson(jsonMap as Map<String, dynamic>)
-    ];
-  }
+  KitBooks(
+    this.id,
+    this.price,
+    this.title,
+    this.authors,
+    this.description,
+    /*
+      //this.thumbnailUrl*/
+  );
+  KitBooks.fromJson(Map<String, dynamic> jsonMap)
+      : id = jsonMap['ID'] as int,
+        price = jsonMap['price'].toString(),
+        title = jsonMap['title'] as String,
+        authors = (jsonMap['authors'] as List).join(', '),
+        description =
+            jsonMap['description'] as String ?? '<missing description>';
 }
 
 class MyBookDetailsPage extends StatelessWidget {
   // ignore: non_constant_identifier_names
-  final KitBook book;
+  final KitBooks book;
   const MyBookDetailsPage(this.book);
 
   @override
@@ -193,11 +185,11 @@ class MyBookDetailsPage extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: Column(
           children: [
-            Hero(
-              tag: book.id,
-              child: book.thumbnail,
-            ),
-            SizedBox(height:20.0),
+//            Hero(
+//              tag: book.id,
+//              child: book.title,
+//            ),
+            SizedBox(height: 20.0),
             StatefulStarRating(),
             Divider(),
             Expanded(
@@ -205,24 +197,22 @@ class MyBookDetailsPage extends StatelessWidget {
                 child: Text(book.description),
               ),
             ),
-
             Container(
               child: RaisedButton(
                 elevation: 20,
                 color: Colors.blue,
-                child:Text("Buy",
-                  style: TextStyle(
-                      color: Colors.red
-                  ),),
-                onPressed: () =>  Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => Kdownload()),
+                child: Text(
+                  "Buy",
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => Kdownload(books: this.book)),
               ),
-
+              ),
             ),
-            ),
-
           ],
         ),
       ),
     );
-  }}
+  }
+}

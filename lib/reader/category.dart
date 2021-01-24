@@ -213,9 +213,9 @@ class MyBookDetailsPage extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.red
                   ),),
-                onPressed: () =>  Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => Kdownload()),
-                ),
+//                onPressed: () =>  Navigator.of(context).push(
+//                  MaterialPageRoute(builder: (_) => Kdownload()),
+//                ),
 
               ),
             ),

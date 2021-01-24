@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:kitabui/models/User.dart';
 import 'package:kitabui/pages/login_screen.dart';
+import '../consts.dart' as consts;
 
 class Register extends StatefulWidget {
   const Register({Key key}) : super(key: key);
@@ -375,7 +376,7 @@ class _RegisterFormState extends State<Register> {
 
   Future<http.StreamedResponse> RegUser(
       String name, String phoneNumber, String email, String password) async {
-    var rl = Uri(scheme: 'http', host: '10.2.64.163', path: 'api/register');
+    var rl = Uri(scheme: 'http', host: consts.location, path: 'api/register');
 
     var req = http.MultipartRequest("POST", rl);
     req.fields.addAll({

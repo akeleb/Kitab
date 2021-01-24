@@ -1,4 +1,5 @@
 import 'package:kitabui/screens/detail.dart';
+import 'package:kitabui/screens/download.dart';
 import 'package:kitabui/utilities/consttants.dart';
 import 'package:kitabui/screens/details_screen.dart';
 import 'package:kitabui/widgets/book_rating.dart';
@@ -52,6 +53,16 @@ class HomeScreen extends StatelessWidget {
                           title: "ብርቅርቅታ",
                           authors: "ዳንኤል ስቲል",
                           rating: 4.9,
+//                        pressRead:(){
+////                          Navigator.push(
+////                            context,
+////                            MaterialPageRoute(
+////                              builder: (context) {
+////                                return Kdownload();
+////                              },
+////                            ),
+////                          );
+////                        },
                           pressDetails: () {
                             Navigator.push(
                               context,
@@ -68,6 +79,16 @@ class HomeScreen extends StatelessWidget {
                           title: "ከአድማስ ባሻገር",
                           authors: "በአሉ ግርማ",
                           rating: 4.8,
+//                          pressRead:(){
+//                            Navigator.push(
+//                              context,
+//                              MaterialPageRoute(
+//                                builder: (context) {
+//                                  return Kdownload();
+//                                },
+//                              ),
+//                            );
+//                          },
                           pressDetails: () {
                             Navigator.push(
                               context,
@@ -296,7 +317,16 @@ class HomeScreen extends StatelessWidget {
               child: TwoSideRoundedButton(
                 text: "Read",
                 radious: 24,
-                press: () {},
+//                press: () {
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) {
+//                          return Kdownload();
+//                        },
+//                      ),
+//                    );
+//                },
               ),
             ),
           ),
