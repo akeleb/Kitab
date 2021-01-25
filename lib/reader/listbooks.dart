@@ -202,9 +202,9 @@ class MyBookDetailsPage extends StatelessWidget {
                   "Buy",
                   style: TextStyle(color: Colors.red),
                 ),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => Kdownload(books: this.book)),
-                ),
+//                onPressed: () => Navigator.of(context).push(
+//                  MaterialPageRoute(builder: (_) => Kdownload(this.book)),
+//                ),
               ),
             ),
           ],
