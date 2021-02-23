@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:kitabui/screens/download.dart';
 import 'package:kitabui/widgets/book_ratingss.dart';
 
-class Category extends StatefulWidget {
-  const Category({Key key}) : super(key: key);
+class KitabBooks2 extends StatefulWidget {
+  const KitabBooks2({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => CategoryState();
+  KitabBooks2State createState() => KitabBooks2State();
 }
 
-class CategoryState extends State<Category> {
+class KitabBooks2State extends State<KitabBooks2> {
 
   final scafoldkey= GlobalKey<ScaffoldState>();
 
@@ -22,81 +21,61 @@ class CategoryState extends State<Category> {
   void initState() {
     super.initState();
     this.queryController = TextEditingController();
-
   }
 
-  static const menuItems = <String>[
-    'Fictional Books',
-    'History Books',
-    'Translated Books',
-    'Religious Books',
-    'Psychology Books',
-    'Philosophy Books',
-    'Educational Boooks',
-    'Poletical Books',
-    'Diary Books'
-  ];
-  final List<DropdownMenuItem<String>> CategoryItems = menuItems
-      .map(
-        (String value) => DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        ),
-      )
-      .toList();
-
-  String btnSelectedVal;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scafoldkey,
       backgroundColor: Colors.blueGrey,
-        appBar: AppBar(title: Text("Category")),
-        body:Column(
-      children: <Widget>[
-        ListTile(
-          title: const Text('Choose your book category'),
-          trailing: DropdownButton(
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-            ),
-            dropdownColor: Colors.blueGrey,
-            value: btnSelectedVal,
-            hint: const Text('Choose'),
-            onChanged: (String newValue) {
-              setState(() {
-                btnSelectedVal = newValue;
-              });
-            },
-            items: CategoryItems,
-          ),
-        ),
-        ButtonBar(
-          children: <Widget>[
-            RaisedButton(
-              color: Colors.green,
-              onPressed:
-              pending ? null : () => this.search(btnSelectedVal),
-              child: Text(
-                  'Search'),
-            ),
-          ],
-        ),
-        if (this.books.isNotEmpty)
-          Expanded(
-            child: ListView.builder(
-              itemCount: this.books.length,
-              itemBuilder: (ctx, i) => bookToListTile(books[i]),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text("Kitab Books"),
+      ),
+      body: Column(
+        children: <Widget>[
+          Divider(),
+          SizedBox(height: 20),
+          TextField(
+            controller: this.queryController,
+            decoration: InputDecoration(
+              labelText: 'Search Books With Title',
+              labelStyle: TextStyle(
+                color: Colors.yellow,
+              ),
+              border: OutlineInputBorder(),
             ),
           ),
-      ],
-    ),);
 
+          ButtonBar(
+            children: <Widget>[
+              RaisedButton(
+                color: Colors.green,
+                onPressed:
+                pending ? null : () => this.search(queryController.text),
+                child: Text(
+                    'Search'),
+              ),
+
+            ],
+          ),
+          if (this.books.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                itemCount: this.books.length,
+                itemBuilder: (ctx, i) => bookToListTile(books[i]),
+              ),
+            ),
+        ],
+      ),
+
+
+    );
   }
+
   ListTile bookToListTile(KitBook book) {
     return ListTile(
-      tileColor: Colors.blueGrey,
+      tileColor: Colors.lightBlueAccent,
       title: Text(book.title),
       subtitle: Text(book.authors),
       trailing: Hero(tag: book.id, child: book.thumbnail),
@@ -127,7 +106,7 @@ class CategoryState extends State<Category> {
     try {
       this.books = await getBooksList(query);
       scafoldkey.currentState.showSnackBar(
-        SnackBar(content: Text('Successfully found ${books.length} $btnSelectedVal.')),
+        SnackBar(content: Text('Successfully found ${books.length} books.')),
       );
     } catch (e) {
       scafoldkey.currentState.showSnackBar(
@@ -137,6 +116,7 @@ class CategoryState extends State<Category> {
     setState(() => this.pending = false);
   }
 }
+// Data class to convert from the json response.
 class KitBook {
   final String price;
   final String id;
@@ -176,6 +156,7 @@ class KitBook {
     ];
   }
 }
+
 class MyBookDetailsPage extends StatelessWidget {
   // ignore: non_constant_identifier_names
   final KitBook book;
@@ -197,7 +178,7 @@ class MyBookDetailsPage extends StatelessWidget {
               child: book.thumbnail,
             ),
             SizedBox(height:20.0),
-            StarRating(),
+            StatefulStarRating(),
             Divider(),
             Expanded(
               child: SingleChildScrollView(
@@ -213,11 +194,8 @@ class MyBookDetailsPage extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.red
                   ),),
-//                onPressed: () =>  Navigator.of(context).push(
-//                  MaterialPageRoute(builder: (_) => Kdownload()),
-//                ),
-
               ),
+
             ),
 
           ],

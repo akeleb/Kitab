@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kitabui/pages/login_screen.dart';
 import 'package:kitabui/reader/category.dart';
 import 'package:kitabui/reader/listbooks.dart';
+import 'package:kitabui/reader/listbooks2.dart';
 import 'package:kitabui/reader/reader.dart';
+import 'package:kitabui/reader/searchkitab2.dart';
 import 'package:kitabui/screens/home_screen.dart';
 import 'package:kitabui/reader/searchkitab.dart';
 import 'package:kitabui/models/User.dart';
@@ -28,8 +30,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             shape: BoxShape.rectangle,
 
           ),
+          //widget.userInfo.userName,widget.userInfo.email
 
-          accountName: Text('widget.userInfo.userName' ,style: TextStyle(
+          accountName: Text( 'widget.userInfo.userName',style: TextStyle(
             color: Colors.white,
             fontSize: 20,
             fontFamily: 'OpenSans',
@@ -77,7 +80,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             fontFamily: 'OpenSans',
           ),),
           onTap: () =>  Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => GetAllBooks()),
+            MaterialPageRoute(builder: (_) => KitabBooks(title: '',)),
           ),
         ),
         ListTile(
@@ -152,6 +155,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               );
             }
         ),
+
         ListTile(
             title: Text('About Us',style: TextStyle(
               color: Colors.white,
@@ -160,6 +164,29 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               fontFamily: 'OpenSans',
             ),),
             onTap: (){}
+        ),
+        SizedBox(height: 40,),
+        ListTile(
+          tileColor: Colors.blue,
+            title: Center(
+              child: Text('Logout',style: TextStyle(
+                color: Colors.pink,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+              ),),
+            ),
+            onTap: (){
+            Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return LoginPage();
+                  },
+                ),
+              );
+            }
         ),
 
       ],
@@ -181,6 +208,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         )
     );
   }
+
 }
 
 // <void> means this route returns nothing.

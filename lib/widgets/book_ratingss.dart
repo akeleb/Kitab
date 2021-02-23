@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../consts.dart' as consts;
 
 class StarRating extends StatelessWidget {
     final void Function(int index) onChanged;
@@ -56,4 +58,19 @@ class StatefulStarRating extends StarRating {
             },
         );
     }
+}
+
+Future<http.StreamedResponse> rating(String rate) async {
+    var rl = Uri(scheme: 'http', host: consts.location, path: 'api/rating');
+
+    var req = http.MultipartRequest("POST", rl);
+    req.fields.addAll({
+        "Rating": rate,
+
+    });
+
+    var response = await req.send();
+
+//    print("I got " + await response.stream.bytesToString());
+    return response;
 }

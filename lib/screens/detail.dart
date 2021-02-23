@@ -36,7 +36,7 @@ class DetailsPage extends StatelessWidget {
                             ],
                         ),
                         SizedBox(height:20.0),
-                        StatefulStarRating(),
+                        StarRating(),
                         Divider(),
                         Expanded(
                             child: SingleChildScrollView(

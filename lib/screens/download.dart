@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:kitabui/reader/listbooks.dart';
 import 'package:kitabui/reader/searchkitab.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,12 +27,13 @@ class KdownloadState extends State<Kdownload> {
   KdownloadState(KitBooks books) {
     book = books;
     fileName = book.id.toString() + ".pdf";
+    fileUrl = Uri(
+        scheme: 'http',
+        host: consts.location,
+        path: "/cntnt/"+book.id.toString()+".pdf");
   }
   static KitBooks book;
-  var fileUrl = Uri(
-      scheme: 'http',
-      host: consts.location,
-      path: "/cntnt/"+book.id.toString()+".pdf").toString();
+  Uri fileUrl;
   String fileName;
   final Dio dio = Dio();
   String progress = "";
@@ -137,7 +137,7 @@ class KdownloadState extends State<Kdownload> {
 
     try {
       final response = await dio.download(
-          fileUrl,
+          fileUrl.toString(),
           savePath,
           onReceiveProgress: onReceiveProgress
       );

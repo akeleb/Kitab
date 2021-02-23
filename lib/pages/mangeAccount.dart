@@ -15,6 +15,9 @@ class ManageAccount extends StatefulWidget {
 }
 
 class ManageAccountState extends State<ManageAccount> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  http.StreamedResponse futureResponse;
+  String userIno="userinfo";
 
   @override
   void initState() {
@@ -51,16 +54,33 @@ class ManageAccountState extends State<ManageAccount> {
                       fontWeight: FontWeight.bold,
                       fontFamily: 'OpenSans',
                     ),),
-                    onPressed:() {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context)  {
-                            return  UserField();
+                    onPressed:() async{
+                      try {
+                        futureResponse = await fetchUserInfo(userIno);
+                        var body_str = await futureResponse.stream
+                            .bytesToString();
+                        dynamic body_json = jsonDecode(body_str);
+                        UserInffo st(){
+                          return UserInffo(userName: body_json['uname'],
+                              email: body_json['email'],
+                            phonNumber: body_json['pno'],
+                              Password: body_json['password']);
+                        }
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(
+                          builder: (context) {
+                            return UserField(userIno);
                           },
-                        ),
-                      );
+                        ));
+                      } catch (e) {
+                        showSnackBar(
+                          ('  We can\'t reach the server\n'
+                              '  please check your internet connection! '),
+                        );
+                      }
                     },
+
+
                   padding: EdgeInsets.all(15.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0),
@@ -89,15 +109,35 @@ class ManageAccountState extends State<ManageAccount> {
 
 
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
+  void showSnackBar(String message) {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+        action: SnackBarAction(
+          label: "Close",
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+        content: (Text(message))));
+  }
 }
+class UserInffo
+{
+  final String userName;
+  final String email;
+  final String phonNumber;
+  final String Password;
+  UserInffo({this.userName,this.email,this.Password,this.phonNumber});
+}
+
 class UserField extends StatefulWidget  {
+  UserField(String userIno);
+
   @override
   _UserFieldState createState() => _UserFieldState();
 }
@@ -144,23 +184,7 @@ class _UserFieldState extends State<UserField> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff21254A),
-      body: FutureBuilder(
-          future: fetchUserInfo(userinfo),
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.hasError) {
-                return Center(child: Text('  We can\'t reach the server\n'
-                    '  please check your internet connection! ',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontFamily: 'OpenSans',
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ));
-              }
-              else {
-                return Container(
+      body: Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
                     physics: AlwaysScrollableScrollPhysics(),
@@ -420,14 +444,20 @@ class _UserFieldState extends State<UserField> {
                       ),
                     ),
                   ),
+                 ),
                 );
               }
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          }),
-    );
+  void showSnackBar(String message) {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+        action: SnackBarAction(
+          label: "Close",
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+        content: (Text(message))));
   }
+            }
+
 
   // ignore: missing_return
   Future<http.StreamedResponse> fetchUserInfo(String user) async {
@@ -439,7 +469,7 @@ class _UserFieldState extends State<UserField> {
     var req = http.MultipartRequest("POST", rl);
 
     req.fields.addAll({
-      "user": user,
+      "token": user,
     });
 //    print("I got " + await response.stream.bytesToString());
     var response = await req.send();
@@ -465,14 +495,6 @@ class _UserFieldState extends State<UserField> {
     return response;
   }
 
-  void showSnackBar(String message) {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-        action: SnackBarAction(
-          label: "Close",
-          textColor: Colors.white,
-          onPressed: () {},
-        ),
-        content: (Text(message))));
-  }
-}
+
+
 

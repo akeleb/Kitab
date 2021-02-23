@@ -24,8 +24,8 @@ class MyAppState extends State<MyApp>{
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         textTheme: Theme.of(context).textTheme.apply(
-              displayColor: kBlackColor,
-            ),
+          displayColor: kBlackColor,
+        ),
       ),
       home: LoginPage(),
     );

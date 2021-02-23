@@ -187,7 +187,7 @@ class MyBookDetailsPage extends StatelessWidget {
 //              child: book.title,
 //            ),
             SizedBox(height: 20.0),
-            StatefulStarRating(),
+            StarRating(),
             Divider(),
             Expanded(
               child: SingleChildScrollView(

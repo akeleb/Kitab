@@ -200,77 +200,77 @@ class LoginPageState extends State<LoginPage> {
                                     setState(() {
                                       isRequesting = true;
                                     });
-//                                    try {
-//                                      futureResponse = await LogInuser(
-//                                          userNameController.text,
-//                                          passwordController.text);
-//                                    } catch (e) {
-//                                      setState(() {
-//                                        isRequesting = false;
-//                                      });
-//                                      showSnackBar(
-//                                        ('  We can\'t reach the server\n'
-//                                            '  please check your internet connection! '),
-//                                      );
-//                                    }
-                                    //Navigator.pop(context);
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) {
-                                        return WelcomeScreen();
-                                      },
-                                    ));
+                                    try {
+                                      futureResponse = await LogInuser(
+                                          userNameController.text,
+                                          passwordController.text);
+                                    } catch (e) {
+                                      setState(() {
+                                        isRequesting = false;
+                                      });
+                                      showSnackBar(
+                                        ('  We can\'t reach the server\n'
+                                            '  please check your internet connection! '),
+                                      );
+                                    }
+//                                    Navigator.pop(context);
+//                                    Navigator.of(context)
+//                                        .push(MaterialPageRoute(
+//                                      builder: (context) {
+//                                        return WelcomeScreen();
+//                                      },
+//                                    ));
 
-//                                    switch (futureResponse.statusCode) {
-//                                      case 200:
-//                                        setState(() {
-//                                          isRequesting = false;
-//                                        });
-//                                        user = new User();
-//                                        showSnackBar("Well Come "+ userNameController.text);
-//                                        Timer(Duration(seconds: 2), () async {
-//                                          //Navigator.pop(context);
-//                                          var body_str = await futureResponse.stream
-//                                              .bytesToString();
-//                                          dynamic body_json = jsonDecode(body_str);
-//
-//                                          UserInfo st(){
-//                                            return UserInfo(userName: body_json['uname'],
-//                                                email: body_json['email']);
-//                                          }
-//
-//                                          Navigator.of(context)
-//                                              .push(MaterialPageRoute(
-//                                            builder: (context) {
-//                                              return WelcomeScreen(userInfo:st());
-//                                            },
-//                                          ));
-//                                          setState(() {
-//                                            userNameController.text="";
-//                                            passwordController.text="";
-//                                          });
-//                                        });
-//
-//                                        break;
-//                                      case 400:
-//                                        setState(() {
-//                                          isRequesting = false;
-//                                        });
-//                                        var body_str = await futureResponse.stream
-//                                            .bytesToString();
-//                                        dynamic body_json = jsonDecode(body_str);
-//                                        showSnackBar(body_json["message"] +
-//                                            "\n"
-//                                                "make sure you have enterd the correct"
-//                                                " user name and password");
-//                                        break;
-//                                      default:
-//                                        showSnackBar(
-//                                            "Something went wrong, try again");
-//                                        setState(() {
-//                                          isRequesting = false;
-//                                        });
-//                                    }
+                                    switch (futureResponse.statusCode) {
+                                      case 200:
+                                        setState(() {
+                                          isRequesting = false;
+                                        });
+                                        user = new User();
+                                        showSnackBar("Well Come "+ userNameController.text);
+                                        Timer(Duration(seconds: 2), () async {
+                                          //Navigator.pop(context);
+                                          var body_str = await futureResponse.stream
+                                              .bytesToString();
+                                          dynamic body_json = jsonDecode(body_str);
+
+                                          UserInfo st(){
+                                            return UserInfo(userName: body_json['uname'],
+                                                email: body_json['email']);
+                                          }
+
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) {
+                                              return WelcomeScreen(userInfo:st());
+                                            },
+                                          ));
+                                          setState(() {
+                                            userNameController.text="";
+                                            passwordController.text="";
+                                          });
+                                        });
+
+                                        break;
+                                      case 400:
+                                        setState(() {
+                                          isRequesting = false;
+                                        });
+                                        var body_str = await futureResponse.stream
+                                            .bytesToString();
+                                        dynamic body_json = jsonDecode(body_str);
+                                        showSnackBar(body_json["message"] +
+                                            "\n"
+                                                "make sure you have enterd the correct"
+                                                " user name and password");
+                                        break;
+                                      default:
+                                        showSnackBar(
+                                            "Something went wrong, try again");
+                                        setState(() {
+                                          isRequesting = false;
+                                        });
+                                    }
                                   }
                                 },
                                 padding: EdgeInsets.all(15.0),
@@ -346,7 +346,6 @@ class LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
   final formKey = new GlobalKey<FormState>();
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();

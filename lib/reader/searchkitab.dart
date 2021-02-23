@@ -6,7 +6,9 @@ import 'package:kitabui/widgets/book_ratingss.dart';
 import '../consts.dart' as consts;
 
 class KitabBooks extends StatefulWidget {
-  const KitabBooks({Key key}) : super(key: key);
+  final String title;
+
+  const KitabBooks({Key key, this.title}) : super(key: key);
 
   @override
   KitabBooksState createState() => KitabBooksState();
@@ -24,6 +26,7 @@ class KitabBooksState extends State<KitabBooks> {
   void initState() {
     super.initState();
     this.queryController = TextEditingController();
+    if(widget.title!=null) this.search(widget.title);
   }
   dispose();
   @override
@@ -39,26 +42,30 @@ class KitabBooksState extends State<KitabBooks> {
         children: <Widget>[
           Divider(),
           SizedBox(height: 20),
-          TextField(
-            controller: this.queryController,
-            decoration: InputDecoration(
-              labelText: 'Search Books With Title',
-              labelStyle: TextStyle(
-                color: Colors.yellow,
+          widget.title==null? Column(
+            children: [
+              TextField(
+                controller: this.queryController,
+                decoration: InputDecoration(
+                  labelText: 'Search Books With Title',
+                  labelStyle: TextStyle(
+                    color: Colors.yellow,
+                  ),
+                  border: OutlineInputBorder(),
+                ),
               ),
-              border: OutlineInputBorder(),
-            ),
-          ),
-          ButtonBar(
-            children: <Widget>[
-              RaisedButton(
-                color: Colors.green,
-                onPressed:
-                    pending ? null : () => this.search(queryController.text),
-                child: Text('Search'),
+              ButtonBar(
+                children: <Widget>[
+                  RaisedButton(
+                    color: Colors.green,
+                    onPressed:
+                        pending ? null : () => this.search(widget.title!=null? widget.title: queryController.text),
+                    child: Text('Search'),
+                  ),
+                ],
               ),
             ],
-          ),
+          ): SizedBox.shrink(),
           if (this.books.isNotEmpty)
             Expanded(
               child: ListView.builder(
@@ -78,8 +85,9 @@ class KitabBooksState extends State<KitabBooks> {
     return ListTile(
       tileColor: Colors.blueGrey,
       title: Text(book.title),
-      subtitle: Text(book.authors),
-      //trailing: Hero(tag: book.id, child: book.thumbnail),
+      subtitle: Text(book.author),
+      trailing: Hero(tag: book.id,
+          child: Image.network("http://"+consts.location+"/tmbnl/"+book.id.toString()+".png")),
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => MyBookDetailsPage(book)),
       ),
@@ -147,7 +155,7 @@ class KitBooks {
   final String price;
   final int id;
   final String title;
-  final String authors;
+  final String author;
   final String description;
 //  final String thumbnailUrl;
 
@@ -155,16 +163,14 @@ class KitBooks {
     this.id,
     this.price,
     this.title,
-    this.authors,
-    this.description,
-    /*
-      //this.thumbnailUrl*/
+    this.author,
+    this.description, 
   );
   KitBooks.fromJson(Map<String, dynamic> jsonMap)
-      : id = jsonMap['ID'] as int,
+      : id = jsonMap['id'] as int,
         price = jsonMap['price'].toString(),
         title = jsonMap['title'] as String,
-        authors = (jsonMap['authors'] as List).join(', '),
+        author = jsonMap['author'] as String,
         description =
             jsonMap['description'] as String ?? '<missing description>';
 }
@@ -185,24 +191,25 @@ class MyBookDetailsPage extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: Column(
           children: [
-//            Hero(
-//              tag: book.id,
-//              child: book.title,
-//            ),
+//
             SizedBox(height: 20.0),
+            Hero(tag: book.id,
+                child: Image.network(
+                    "http://"+consts.location+"/tmbnl/"+book.id.toString()+".png")),
             StatefulStarRating(),
             Divider(),
             Expanded(
               child: SingleChildScrollView(
                 child: Text(book.description),
               ),
+
             ),
             Container(
               child: RaisedButton(
                 elevation: 20,
                 color: Colors.blue,
                 child: Text(
-                  "Buy",
+                  "Read",
                   style: TextStyle(color: Colors.red),
                 ),
                 onPressed: () => Navigator.of(context).push(
