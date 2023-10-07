@@ -16,6 +16,7 @@
 ## Introduction
 
 Welcome to the eBook Selling Platform project! This mobile application is designed to sell soft copy books using a unique file format to prevent unauthorized sharing.
+ The eBook Selling Platform is a Flutter-based mobile application developed as part of my final year graduation project. It provides a platform for authors and publishers to sell their digital books while ensuring that these books cannot be easily shared with unauthorized users. By implementing a novel file format, we aim to protect the intellectual property of content creators.
 
 ## Features
 
