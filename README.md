@@ -1,16 +1,45 @@
 # kitab
 
-A new Flutter application.
+# eBook Selling Platform
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [File Format](#file-format)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Introduction
+
+Welcome to the eBook Selling Platform project! This mobile application is designed to sell soft copy books using a unique file format to prevent unauthorized sharing.
+
+## Features
+
+- **Secure eBook Format:** Our platform uses a custom file format that encrypts eBooks, preventing unauthorized sharing and piracy.
+- **User-friendly Interface:** The mobile app offers an intuitive and user-friendly interface for both buyers and sellers.
+- **Payment Integration:** Seamless payment integration enables users to purchase eBooks securely.
+- **Author and Publisher Profiles:** Authors and publishers can create profiles, manage their eBooks, and track sales.
+- **Search and Discovery:** Users can search for eBooks by title, genre, author, or publisher, making it easy to discover new content.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To get started with the eBook Selling Platform, follow the instructions below.
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Before you begin, ensure you have the following prerequisites installed:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter SDK: [Installation Guide](https://flutter.dev/docs/get-started/install)
+- Dart SDK: [Installation Guide](https://dart.dev/get-dart)
+
+### Installation
+
+1. Clone the repository to your local machine
+2. Navigate to the project directory
+3. Install the required dependencies
+4. Run the app on your preferred emulator or device
+
